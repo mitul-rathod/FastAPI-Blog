@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    volumes:
+      - backend-db:/app
+      - ./app/:/app/app/
+    env_file:
+      - .env
+
+    container_name: FastAPI-Blog-Backend
+volumes:
+  backend-db:

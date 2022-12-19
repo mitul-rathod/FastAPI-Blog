@@ -9,7 +9,11 @@ from sqlalchemy.orm import Session
 
 from app import crud, models
 from app.api import dependencies
-from app.exception.base_exception import post_not_found
+from app.exception.base_exception import (
+    post_not_found,
+    post_not_found_by_user,
+    user_not_found,
+)
 from app.logger import logger
 
 from app.schemas import PostCreate, PostDisplay, PostUpdate, PostDisplayDetailed
@@ -101,5 +105,30 @@ async def search_post(
     """
 
     posts = crud.post.search(db_session, keyword=keyword)
+
+    return posts
+
+
+@router.get("/byUser/{user_id}", response_model=List[PostDisplay])
+async def get_posts_by_user(
+    request: Request,
+    user_id: int,
+    db_session: Session = Depends(dependencies.get_db),
+):
+    """
+    API for getting all posts by user
+    """
+
+    user = crud.user.get(db_session, id_value=user_id)
+
+    if not user:
+        logger.error("User with id %s not found", user_id)
+        raise user_not_found
+
+    posts = crud.post.get_multi_by_user(db_session, user_id=user_id)
+
+    if not posts:
+        logger.error("Post with user id %s not found", user_id)
+        raise post_not_found_by_user
 
     return posts

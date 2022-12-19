@@ -42,3 +42,8 @@ post_not_found = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="Post Does Not Exist!",
 )
+
+post_not_found_by_user = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Post Does Not Exist for this User!",
+)

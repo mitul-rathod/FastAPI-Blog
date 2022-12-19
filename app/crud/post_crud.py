@@ -35,5 +35,13 @@ class CRUDCategory(CRUDBase[Post, PostCreate, PostUpdate]):
         db_session.refresh(db_obj)
         return db_obj
 
+    def get_multi_by_user(
+        self, db_session: Session, *, user_id: int
+    ) -> List[PostDisplay]:
+        """
+        Method to get all objects by user id
+        """
+        return db_session.query(Post).filter(Post.author_id == user_id).all()
+
 
 post = CRUDCategory(Post)

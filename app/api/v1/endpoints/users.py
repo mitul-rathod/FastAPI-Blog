@@ -110,3 +110,22 @@ async def search_user(
     users = jsonable_encoder(crud.user.search(db_session, keyword=keyword))
 
     return users
+
+
+@router.get("/getById", response_model=UserDisplay)
+async def get_user_by_id(
+    request: Request,
+    id: int,
+    db_session: Session = Depends(dependencies.get_db),
+):
+    """
+    API for getting a user by id
+    """
+    user = crud.user.get_by_id(db_session, id_value=id)
+    if not user:
+        logger.error("User with id %s not found", id)
+        raise user_not_found
+
+    user = jsonable_encoder(user)
+
+    return user
