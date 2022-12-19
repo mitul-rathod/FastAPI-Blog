@@ -26,6 +26,7 @@ class User(Base):
     created = Column(DateTime(timezone=True), server_default=func.now())
     updated = Column(DateTime(timezone=True), onupdate=func.now())
 
+    posts = relationship("Post", back_populates="author", passive_deletes=True)
 
     @declared_attr
     def __searchable__(self) -> list:

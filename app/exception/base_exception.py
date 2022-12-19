@@ -27,3 +27,18 @@ invalid_credentials = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
     detail="Invalid Credentials!",
 )
+
+category_not_found = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Category Does Not Exist!",
+)
+
+tag_not_found = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Tag Does Not Exist!",
+)
+
+post_not_found = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Post Does Not Exist!",
+)

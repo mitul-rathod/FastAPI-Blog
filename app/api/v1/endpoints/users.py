@@ -1,5 +1,5 @@
 """
-    ADMIN ENDPOINTS
+    USER ENDPOINTS
 """
 from typing import Any, List
 
@@ -11,7 +11,7 @@ from app import crud, schemas
 from app.api import dependencies
 from app.logger import logger
 from app.exception.base_exception import user_found, invalid_password, user_not_found
-from app.schemas.user_schema import UserDisplay, UserDisplay
+from app.schemas.user_schema import UserDisplay
 from app.utils import (
     is_email_valid,
     is_valid_password,

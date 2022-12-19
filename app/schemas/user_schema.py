@@ -16,6 +16,9 @@ class UserBase(BaseModel):
     last_name: str
     email: str
 
+    class Config:
+        orm_mode = True
+
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
@@ -52,5 +55,4 @@ class UserDisplay(UserBase):
     """
 
     id: str
-    gender: Optional[GenderEnum]
     username: Optional[str]
