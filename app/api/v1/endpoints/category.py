@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, BackgroundTasks, Request, Response
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
+from app import crud, models
 from app.api import dependencies
 from app.exception.base_exception import category_not_found
 from app.logger import logger
@@ -36,6 +36,7 @@ async def create_category(
     request: Request,
     category_in: CategoryCreate,
     db_session: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_user),
 ):
     """
     API for creating a new category
@@ -51,6 +52,7 @@ async def update_category(
     request: Request,
     category_in: CategoryUpdate,
     db_session: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_user),
 ):
     """
     API for updating a category
@@ -74,11 +76,33 @@ async def delete_category(
     request: Request,
     id: int,
     db_session: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_user),
 ):
     """
     API for deleting a category
     """
 
-    category = jsonable_encoder(crud.category.remove(db_session, id_value=id))
+    category = crud.category.get(db_session, id_value=id)
+
+    if not category:
+        logger.error("Category with id %s not found", id)
+        raise category_not_found
+
+    category = jsonable_encoder(crud.category.remove(db_session, id=id))
 
     return category
+
+
+@router.get("/search", response_model=List[CategoryDisplay])
+async def search_category(
+    request: Request,
+    keyword: str,
+    db_session: Session = Depends(dependencies.get_db),
+):
+    """
+    API for searching categories
+    """
+
+    categories = jsonable_encoder(crud.category.search(db_session, keyword=keyword))
+
+    return categories

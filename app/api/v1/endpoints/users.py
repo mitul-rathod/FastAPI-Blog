@@ -96,3 +96,17 @@ async def delete_user(
     user = jsonable_encoder(crud.user.remove(db_session, id_value=id))
 
     return user
+
+
+@router.post("/search", response_model=List[UserDisplay])
+async def search_user(
+    request: Request,
+    keyword: str,
+    db_session: Session = Depends(dependencies.get_db),
+):
+    """
+    API for searching a user
+    """
+    users = jsonable_encoder(crud.user.search(db_session, keyword=keyword))
+
+    return users

@@ -7,13 +7,12 @@ from fastapi import APIRouter, Depends, BackgroundTasks, Request, Response
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
-from app import crud, schemas
+from app import crud, models
 from app.api import dependencies
 from app.exception.base_exception import post_not_found
 from app.logger import logger
 
-from app.schemas import PostCreate, PostDisplay, PostUpdate
-
+from app.schemas import PostCreate, PostDisplay, PostUpdate, PostDisplayDetailed
 
 router = APIRouter()
 
@@ -36,6 +35,7 @@ async def create_post(
     request: Request,
     post_in: PostCreate,
     db_session: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_user),
 ):
     """
     API for creating a new post
@@ -51,6 +51,7 @@ async def update_post(
     request: Request,
     post_in: PostUpdate,
     db_session: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_user),
 ):
     """
     API for updating a post
@@ -72,11 +73,33 @@ async def delete_post(
     request: Request,
     id: int,
     db_session: Session = Depends(dependencies.get_db),
+    current_user: models.User = Depends(dependencies.get_current_user),
 ):
     """
     API for deleting a post
     """
 
-    post = crud.post.remove(db_session, id_value=id)
+    post = crud.post.get(db_session, id_value=id)
+
+    if not post:
+        logger.error("Post with id %s not found", id)
+        raise post_not_found
+
+    post = crud.post.remove(db_session, id=id)
 
     return post
+
+
+@router.get("/search", response_model=List[PostDisplayDetailed])
+async def search_post(
+    request: Request,
+    keyword: str,
+    db_session: Session = Depends(dependencies.get_db),
+):
+    """
+    API for searching a post
+    """
+
+    posts = crud.post.search(db_session, keyword=keyword)
+
+    return posts

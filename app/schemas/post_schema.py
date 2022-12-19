@@ -138,3 +138,14 @@ class PostDisplay(PostBase):
 
     class Config:
         orm_mode = True
+
+
+class PostDisplayDetailed(PostDisplay):
+    """
+    Post Detailed Display Schema
+    """
+
+    body: str
+
+    class Config:
+        orm_mode = True

@@ -16,4 +16,5 @@ from .post_schema import (
     PostCreate,
     PostUpdate,
     PostDisplay,
+    PostDisplayDetailed,
 )

@@ -32,6 +32,10 @@ class Category(Base):
 
     posts = relationship("Post", back_populates="category")
 
+    @declared_attr
+    def __searchable__(self) -> list:
+        return ["name", "description"]
+
 
 class Tag(Base):
     """
@@ -45,6 +49,10 @@ class Tag(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     posts = relationship("Post", secondary=post_tag, back_populates="tags")
+
+    @declared_attr
+    def __searchable__(self) -> list:
+        return ["name", "description"]
 
 
 class Post(Base):
@@ -66,3 +74,7 @@ class Post(Base):
     category = relationship("Category", back_populates="posts")
 
     tags = relationship("Tag", secondary=post_tag, back_populates="posts")
+
+    @declared_attr
+    def __searchable__(self) -> list:
+        return ["title", "body"]
