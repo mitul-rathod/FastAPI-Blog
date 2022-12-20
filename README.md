@@ -11,4 +11,15 @@
 
 -   alembic stamp head
 
-If Running on Docker, Use host.docker.internal instead of localhost
+
+**Commands for starting docker:**
+
+-   docker-compose up --build
+
+
+**Commands for starting without docker:**
+
+-   uvicorn app.main:app --reload
+
+
+If Running on Docker, Use host.docker.internal instead of localhost for Database Credentials
