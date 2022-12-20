@@ -28,11 +28,11 @@ async def unicorn_exception_handler(request: Request, exc: HTTPException):
             },
         )
     except Exception as excep:
-        return schemas.FailureResponse(
-            success=False,
-            message=str(excep.__class__.__name__),
-            data={},
-            errorCode=500,
+        return JSONResponse(
+            status_code=500,
+            content={
+                "message": str(excep),
+            },
         )
 
 

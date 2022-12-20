@@ -43,5 +43,21 @@ class CRUDCategory(CRUDBase[Post, PostCreate, PostUpdate]):
         """
         return db_session.query(Post).filter(Post.author_id == user_id).all()
 
+    def get_multi_by_category(
+        self, db_session: Session, *, category_id: int
+    ) -> List[PostDisplay]:
+        """
+        Method to get all objects by category id
+        """
+        return db_session.query(Post).filter(Post.category_id == category_id).all()
+
+    def get_multi_by_tag(
+        self, db_session: Session, *, tag_id: int
+    ) -> List[PostDisplay]:
+        """
+        Method to get all objects by tag id
+        """
+        return db_session.query(Post).filter(Post.tags.any(id=tag_id)).all()
+
 
 post = CRUDCategory(Post)
